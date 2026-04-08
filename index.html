@@ -95,10 +95,71 @@
     }
 
     .envelope-wrap:hover { transform: translateY(-10px) scale(1.04); }
+
+    .envelope-wrap.opening {
+      pointer-events: none;
+    }
+
+    .envelope-wrap.opening .env-svg {
+      animation: envPulseOut 1.05s cubic-bezier(0.22, 0.7, 0.22, 1) forwards;
+    }
+
+    .envelope-wrap.opening .env-flap {
+      animation: flapLift 0.95s cubic-bezier(0.2, 0.72, 0.24, 1) forwards;
+      transform-origin: 50% 100%;
+      transform-box: fill-box;
+    }
+
+    .envelope-wrap.opening .env-card {
+      animation: cardRise 0.95s cubic-bezier(0.2, 0.75, 0.22, 1) forwards;
+    }
+
+    .envelope-wrap.opening .env-seal,
+    .envelope-wrap.opening .env-seal-heart {
+      animation: sealPop 0.55s ease forwards;
+      animation-delay: 0.08s;
+    }
+
+    .envelope-wrap.opening .env-front {
+      animation: frontFade 0.9s ease forwards;
+      animation-delay: 0.12s;
+    }
+
+    @keyframes flapLift {
+      0% { transform: rotateX(0deg); }
+      45% { transform: rotateX(92deg); }
+      100% { transform: rotateX(168deg) translateY(-4px); opacity: 0.82; }
+    }
+
+    @keyframes cardRise {
+      0% { transform: translateY(0); }
+      35% { transform: translateY(-10px); }
+      100% { transform: translateY(-82px); opacity: 0.05; }
+    }
+
+    @keyframes sealPop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.4); opacity: 0; }
+    }
+
+    @keyframes frontFade {
+      0% { opacity: 1; }
+      100% { opacity: 0.16; }
+    }
+
+    @keyframes envPulseOut {
+      0% { transform: scale(1); filter: drop-shadow(0 0 28px rgba(232, 84, 122, 0.6)); }
+      45% { transform: scale(1.08) rotate(-1deg); filter: drop-shadow(0 0 40px rgba(232, 84, 122, 0.9)); }
+      100% { transform: scale(0.93) rotate(1.6deg) translateY(-10px); opacity: 0; filter: drop-shadow(0 0 52px rgba(240, 192, 112, 0.9)); }
+    }
+
     .env-svg {
       width: clamp(170px, 38vw, 295px);
       filter: drop-shadow(0 0 28px rgba(232, 84, 122, 0.6));
       display: block;
+      transform-origin: center;
+      will-change: transform, opacity, filter;
     }
 
     .open-label {
@@ -160,7 +221,6 @@
     }
 
     .reveal-continue,
-    .pw-btn,
     .hero-badge button,
     .confetti-btn {
       margin-top: clamp(24px, 5vw, 40px);
@@ -178,7 +238,6 @@
     }
 
     .reveal-continue:hover,
-    .pw-btn:hover,
     .hero-badge button:hover,
     .confetti-btn:hover {
       color: #fff;
@@ -186,41 +245,67 @@
       transform: translateY(-2px);
     }
 
-    #password-screen { background: transparent; pointer-events: none; }
+    /* ═══════════════════════════════════════════════
+       PASSWORD SCREEN — Bokeh / Secret Garden style
+    ═══════════════════════════════════════════════ */
+    #password-screen {
+      background: transparent;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Full-screen bokeh canvas lives behind the card */
+    #bokeh-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
     .pw-card {
       pointer-events: all;
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: radial-gradient(ellipse at 30% 20%, rgba(50, 10, 28, 0.72) 0%, rgba(8, 2, 14, 0.65) 100%);
-      backdrop-filter: blur(18px) saturate(1.2);
+      background: rgba(10, 2, 18, 0.55);
+      backdrop-filter: blur(22px) saturate(1.3);
+      -webkit-backdrop-filter: blur(22px) saturate(1.3);
       border: 1px solid rgba(232, 84, 122, 0.18);
       border-radius: 28px;
-      padding: clamp(24px, 5vw, 48px);
-      max-width: 440px;
+      padding: clamp(28px, 5vw, 52px) clamp(24px, 6vw, 52px);
+      max-width: 460px;
       width: 100%;
-      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+      box-shadow:
+        0 0 60px rgba(232, 84, 122, 0.12),
+        0 28px 80px rgba(0, 0, 0, 0.65);
     }
 
-    .pw-lock { font-size: 46px; margin-bottom: 14px; }
+    .pw-lock { font-size: 42px; margin-bottom: 10px; }
 
+    /* "Secret Garden" style title — gradient script */
     .pw-title {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(36px, 8vw, 74px);
-      color: transparent;
-      background: linear-gradient(135deg, #ff8fab, #e8547a, #d4a853);
+      font-size: clamp(42px, 10vw, 82px);
+      background: linear-gradient(135deg, #ff8fab 0%, #e8547a 45%, #d4a853 100%);
       -webkit-background-clip: text;
       background-clip: text;
+      color: transparent;
       text-align: center;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 0 18px rgba(232, 84, 122, 0.45));
     }
 
     .pw-sub {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: 17px;
+      font-size: clamp(13px, 2.5vw, 16px);
       color: rgba(255, 255, 255, 0.42);
-      margin-bottom: 26px;
+      margin-bottom: 28px;
       text-align: center;
     }
 
@@ -228,9 +313,9 @@
 
     .pw-input {
       width: 100%;
-      padding: 12px 18px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(212, 168, 83, 0.3);
+      padding: 13px 20px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 50px;
       color: #fff;
       font-family: 'Lato', sans-serif;
@@ -238,9 +323,18 @@
       letter-spacing: 2px;
       text-align: center;
       outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    .pw-input.wrong { border-color: rgba(232, 84, 122, 0.9); }
+    .pw-input:focus {
+      border-color: rgba(232, 84, 122, 0.6);
+      box-shadow: 0 0 18px rgba(232, 84, 122, 0.18);
+    }
+
+    .pw-input.wrong {
+      border-color: rgba(232, 84, 122, 0.9);
+      box-shadow: 0 0 20px rgba(232, 84, 122, 0.3);
+    }
 
     .pw-error {
       font-family: 'Cormorant Garamond', serif;
@@ -253,6 +347,59 @@
     }
 
     .pw-error.show { opacity: 1; }
+
+    /* Hot-pink filled pill UNLOCK button — matching the video */
+    .pw-btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 14px 30px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #f0437a, #e8547a, #d4175e);
+      color: #fff;
+      font-family: 'Lato', sans-serif;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow:
+        0 0 24px rgba(232, 84, 122, 0.55),
+        0 6px 20px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pw-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      border-radius: inherit;
+    }
+
+    .pw-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow:
+        0 0 36px rgba(232, 84, 122, 0.75),
+        0 10px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    .pw-btn:active { transform: scale(0.98); }
+
+    /* Hint text below lock card */
+    .pw-hint-text {
+      margin-top: 20px;
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(11px, 2.5vw, 14px);
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 3px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    /* ═══════════════════════════════════════════════ */
 
     #main-site { position: relative; z-index: 5; }
 
@@ -305,6 +452,25 @@
       align-items: center;
       gap: 10px;
       min-width: 190px;
+    }
+
+    .music-toggle {
+      border: 1px solid rgba(212, 168, 83, 0.35);
+      background: rgba(212, 168, 83, 0.08);
+      color: rgba(255, 255, 255, 0.78);
+      font-family: 'Lato', sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-radius: 18px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .music-toggle:hover {
+      background: rgba(212, 168, 83, 0.2);
+      color: #fff;
     }
 
     .music-dot {
@@ -580,31 +746,21 @@
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, clamp(110px, 17vw, 180px));
-      gap: 10px;
-      max-width: 780px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      max-width: 980px;
       width: 100%;
       margin-top: 30px;
     }
 
     .g-slot {
-      border-radius: 11px;
-      border: 1px dashed rgba(212, 168, 83, 0.17);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      background: linear-gradient(135deg, rgba(212, 168, 83, 0.03), rgba(232, 84, 122, 0.02));
+      border-radius: 14px;
+      border: 1px solid rgba(212, 168, 83, 0.22);
+      background: linear-gradient(135deg, rgba(212, 168, 83, 0.06), rgba(232, 84, 122, 0.04));
       position: relative;
       overflow: hidden;
-      cursor: pointer;
-    }
-
-    .g-slot:nth-child(1),
-    .g-slot:nth-child(4) {
-      grid-column: span 2;
+      aspect-ratio: 3 / 4;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
     }
 
     .g-slot-icon { font-size: 26px; opacity: 0.36; }
@@ -622,9 +778,15 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 10px;
+      object-position: center;
+      border-radius: 14px;
       position: absolute;
       inset: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .g-slot:hover img {
+      transform: scale(1.04);
     }
 
     #countdown-section {
@@ -709,13 +871,8 @@
 
     @media (max-width: 680px) {
       .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 140px);
-      }
-
-      .g-slot:nth-child(1),
-      .g-slot:nth-child(4) {
-        grid-column: span 1;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
       }
     }
   </style>
@@ -742,7 +899,7 @@
     const isMobile = window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
     const pixelRatio = Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2);
     const messages = [
-      'I love you', 'Stay', 'My person', 'Always you', 'Forever maybe', 'You glow', 'My heart', 'Still choosing you'
+      'I love you', 'Stay', 'loveableradio', 'Always you', 'Forever maybe', 'kotagiripond', 'My heart', 'Still choosing you'
     ];
 
     const scene = new THREE.Scene();
@@ -927,39 +1084,27 @@
       if (e.changedTouches[0]) handleClick(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
     }, { passive: true });
 
-    let ltScene;
-    let ltCamera;
-    let ltRenderer;
-    let ltControls;
-    let ltNebula;
-    let ltHearts;
-    const ltOverlays = [];
-    const ltWaves = [];
+    let ltScene, ltCamera, ltRenderer, ltControls, ltNebula, ltHearts;
+    const ltOverlays = [], ltWaves = [];
     let ltInited = false;
 
-    function goldHeartTexture() {
-      return heartTexture('rgba(255,215,0,0.9)');
-    }
+    function goldHeartTexture() { return heartTexture('rgba(255,215,0,0.9)'); }
 
     function initLetterScene() {
       if (ltInited) return;
       const el = document.getElementById('letter-back');
       const cv = document.getElementById('letter-three-canvas');
       if (!el || !cv) return;
-
       ltInited = true;
       ltScene = new THREE.Scene();
       ltScene.background = new THREE.Color('#02020a');
       const width = el.clientWidth || 640;
       const height = Math.max(el.clientHeight || 420, 380);
-
       ltCamera = new THREE.PerspectiveCamera(70, width / height, 0.1, 250);
       ltCamera.position.set(0, 0, 32);
-
       ltRenderer = new THREE.WebGLRenderer({ antialias: false, canvas: cv, powerPreference: 'high-performance' });
       ltRenderer.setPixelRatio(Math.min(pixelRatio, 1.5));
       ltRenderer.setSize(width, height);
-
       ltControls = new OrbitControls(ltCamera, ltRenderer.domElement);
       ltControls.enableDamping = true;
       ltControls.dampingFactor = 0.035;
@@ -967,7 +1112,6 @@
       ltControls.autoRotateSpeed = 0.14;
       ltControls.enableZoom = false;
       ltControls.enablePan = false;
-
       const neb = new THREE.BufferGeometry();
       const nebCountLt = isMobile ? 700 : 1600;
       const nebPos = new Float32Array(nebCountLt * 3);
@@ -977,20 +1121,8 @@
         nebPos[i * 3 + 2] = (Math.random() - 0.5) * 55;
       }
       neb.setAttribute('position', new THREE.BufferAttribute(nebPos, 3));
-      ltNebula = new THREE.Points(
-        neb,
-        new THREE.PointsMaterial({
-          size: 0.7,
-          map: heartTexture('rgba(255,180,210,0.9)'),
-          color: 0xbdd6ff,
-          transparent: true,
-          opacity: 0.45,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false
-        })
-      );
+      ltNebula = new THREE.Points(neb, new THREE.PointsMaterial({ size: 0.7, map: heartTexture('rgba(255,180,210,0.9)'), color: 0xbdd6ff, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending, depthWrite: false }));
       ltScene.add(ltNebula);
-
       ltHearts = new THREE.Group();
       const normalMat = new THREE.SpriteMaterial({ map: heartTexture('rgba(255,180,210,0.9)'), color: 0xffccff, transparent: true, blending: THREE.AdditiveBlending });
       for (let i = 0; i < 12; i++) {
@@ -1000,22 +1132,20 @@
         h.userData = { off: Math.random() * 100, pw: false, sz: 1.9 };
         ltHearts.add(h);
       }
-
       const parts = [
         { text: 'Part 1: love', color: 0xffd700, pos: new THREE.Vector3(-6, 5, 2) },
         { text: 'Part 2: able', color: 0xffa040, pos: new THREE.Vector3(5, -3, -1) },
         { text: 'loveableradio', color: 0xff69b4, pos: new THREE.Vector3(-1, -7, 3) }
       ];
-      parts.forEach((p, i) => {
+      parts.forEach((p) => {
         const m = new THREE.SpriteMaterial({ map: goldHeartTexture(), color: p.color, transparent: true, blending: THREE.AdditiveBlending });
         const h = new THREE.Sprite(m);
         h.position.copy(p.pos);
         h.scale.setScalar(3.2);
-        h.userData = { off: Math.random() * 100, pw: true, idx: i, text: p.text, sz: 3.2 };
+        h.userData = { off: Math.random() * 100, pw: true, text: p.text, sz: 3.2 };
         ltHearts.add(h);
       });
       ltScene.add(ltHearts);
-
       const lrc = new THREE.Raycaster();
       const lpt = new THREE.Vector2();
       function hitLetter(clientX, clientY) {
@@ -1034,21 +1164,14 @@
         sp.scale.set(hit.userData.pw ? 10.5 : 8.5, hit.userData.pw ? 2.4 : 2, 1);
         ltScene.add(sp);
         ltOverlays.push({ sprite: sp, born: clock.getElapsedTime() });
-        const ring = new THREE.Mesh(
-          new THREE.RingGeometry(0.1, 0.2, 28),
-          new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending })
-        );
+        const ring = new THREE.Mesh(new THREE.RingGeometry(0.1, 0.2, 28), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
         ring.position.copy(hit.position);
         ring.lookAt(ltCamera.position);
         ltScene.add(ring);
         ltWaves.push({ mesh: ring, s: 1, o: 0.8 });
       }
-
       cv.addEventListener('click', (e) => hitLetter(e.clientX, e.clientY));
-      cv.addEventListener('touchend', (e) => {
-        if (e.changedTouches[0]) hitLetter(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-      }, { passive: true });
-
+      cv.addEventListener('touchend', (e) => { if (e.changedTouches[0]) hitLetter(e.changedTouches[0].clientX, e.changedTouches[0].clientY); }, { passive: true });
       window.addEventListener('resize', () => {
         if (!ltInited) return;
         const nextW = el.clientWidth || 640;
@@ -1066,62 +1189,34 @@
       const t = clock.getElapsedTime();
       controls.update();
       nebula.rotation.z = t * 0.005;
-      hearts.children.forEach((h) => {
-        h.position.y += Math.sin(t * h.userData.spd * 0.45 + h.userData.off) * 0.003;
-      });
-      stars.children.forEach((s) => {
-        s.scale.setScalar(s.userData.sz * (0.65 + 0.35 * Math.sin(t * s.userData.tw + s.userData.off)));
-      });
+      hearts.children.forEach((h) => { h.position.y += Math.sin(t * h.userData.spd * 0.45 + h.userData.off) * 0.003; });
+      stars.children.forEach((s) => { s.scale.setScalar(s.userData.sz * (0.65 + 0.35 * Math.sin(t * s.userData.tw + s.userData.off))); });
       for (let i = waves.length - 1; i >= 0; i--) {
-        const w = waves[i];
-        w.s += 0.42;
-        w.o -= 0.026;
-        w.mesh.scale.setScalar(w.s);
-        w.mesh.material.opacity = w.o;
-        if (w.o <= 0) {
-          scene.remove(w.mesh);
-          waves.splice(i, 1);
-        }
+        const w = waves[i]; w.s += 0.42; w.o -= 0.026;
+        w.mesh.scale.setScalar(w.s); w.mesh.material.opacity = w.o;
+        if (w.o <= 0) { scene.remove(w.mesh); waves.splice(i, 1); }
       }
       for (let i = overlays.length - 1; i >= 0; i--) {
-        const o = overlays[i];
-        const age = t - o.born;
+        const o = overlays[i]; const age = t - o.born;
         o.sprite.position.y += 0.002;
         o.sprite.material.opacity = age < 3.5 ? 1 : Math.max(0, 1 - (age - 3.5) / 1.2);
-        if (age > 4.8) {
-          scene.remove(o.sprite);
-          overlays.splice(i, 1);
-        }
+        if (age > 4.8) { scene.remove(o.sprite); overlays.splice(i, 1); }
       }
       renderer.render(scene, camera);
-
       if (ltInited && ltScene && ltRenderer) {
         ltControls.update();
         ltNebula.rotation.z = t * 0.005;
-        ltHearts.children.forEach((h) => {
-          h.position.y += Math.sin(t * 0.55 + h.userData.off) * 0.003;
-          h.scale.setScalar(h.userData.sz + 0.1 * Math.sin(t * 0.8 + h.userData.off));
-        });
+        ltHearts.children.forEach((h) => { h.position.y += Math.sin(t * 0.55 + h.userData.off) * 0.003; h.scale.setScalar(h.userData.sz + 0.1 * Math.sin(t * 0.8 + h.userData.off)); });
         for (let i = ltWaves.length - 1; i >= 0; i--) {
-          const w = ltWaves[i];
-          w.s += 0.24;
-          w.o -= 0.015;
-          w.mesh.scale.setScalar(w.s);
-          w.mesh.material.opacity = w.o;
-          if (w.o <= 0) {
-            ltScene.remove(w.mesh);
-            ltWaves.splice(i, 1);
-          }
+          const w = ltWaves[i]; w.s += 0.24; w.o -= 0.015;
+          w.mesh.scale.setScalar(w.s); w.mesh.material.opacity = w.o;
+          if (w.o <= 0) { ltScene.remove(w.mesh); ltWaves.splice(i, 1); }
         }
         for (let i = ltOverlays.length - 1; i >= 0; i--) {
-          const o = ltOverlays[i];
-          const age = t - o.born;
+          const o = ltOverlays[i]; const age = t - o.born;
           o.sprite.position.y += 0.002;
           o.sprite.material.opacity = age < 3.5 ? 1 : Math.max(0, 1 - (age - 3.5) / 1.2);
-          if (age > 4.8) {
-            ltScene.remove(o.sprite);
-            ltOverlays.splice(i, 1);
-          }
+          if (age > 4.8) { ltScene.remove(o.sprite); ltOverlays.splice(i, 1); }
         }
         ltRenderer.render(ltScene, ltCamera);
       }
@@ -1141,10 +1236,12 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <script type="text/babel">
-    const { useMemo, useState, useEffect, useRef } = React;
+    const { useMemo, useState, useEffect, useRef, useCallback } = React;
 
     const PASSWORD = "loveableradio";
     const BIRTHDAY = new Date("2005-04-12");
+    const SONG_FILE = "Mudhal Nee Mudivum Nee Title Track 8K⧸4K Video Song ｜ Darbuka Siva ｜ Sid Sriram (1).mp3";
+    const SONG_START_SECONDS = 50;
 
     const REASONS = [
       { t: "Your Smile", b: "The way Nazrin's face lights up when she laughs is the most beautiful thing I have ever seen." },
@@ -1156,19 +1253,22 @@
     ];
 
     const GALLERY_LABELS = [
-      "Our first photo",
-      "A favorite memory",
-      "Together forever",
-      "Our adventure",
-      "Something beautiful",
-      "Us against the world",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.53 PM.jpeg",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.53 PM (1).jpeg",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.52 PM (1).jpeg",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.52 PM (2).jpeg",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.51 PM.jpeg",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.52 PM.jpeg",
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.53 PM (2).jpeg",
+       
+      
+      "1st delete/WhatsApp Image 2026-04-08 at 8.35.54 PM.jpeg",
     ];
 
     function getCountdownParts(now) {
       const target = new Date(BIRTHDAY);
       target.setFullYear(now.getFullYear());
       if (target <= now) target.setFullYear(now.getFullYear() + 1);
-
       const diff = target - now;
       return {
         days: Math.floor(diff / 86400000),
@@ -1178,24 +1278,126 @@
       };
     }
 
+    /* ─── Bokeh Canvas Hook ─── */
+    function useBokehCanvas(canvasRef, active) {
+      useEffect(() => {
+        if (!active || !canvasRef.current) return;
+        const cv = canvasRef.current;
+        const ctx = cv.getContext('2d');
+
+        const resize = () => {
+          cv.width = cv.offsetWidth || window.innerWidth;
+          cv.height = cv.offsetHeight || window.innerHeight;
+        };
+        resize();
+
+        // Rose/pink/magenta bokeh orb colors matching the video
+        const COLORS = [
+          'rgba(232,84,122,',   // rose pink
+          'rgba(255,143,171,',  // light rose
+          'rgba(194,24,91,',    // deep rose
+          'rgba(255,100,150,',  // hot pink
+          'rgba(180,60,100,',   // dark rose
+          'rgba(255,180,200,',  // pale pink
+          'rgba(210,50,100,',   // medium rose
+        ];
+
+        const COUNT = window.innerWidth < 768 ? 22 : 38;
+
+        const orbs = Array.from({ length: COUNT }, () => {
+          const r = 40 + Math.random() * 100;
+          return {
+            x: Math.random() * cv.width,
+            y: Math.random() * cv.height,
+            r,
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            baseAlpha: 0.04 + Math.random() * 0.12,
+            alpha: 0,
+            targetAlpha: 0.04 + Math.random() * 0.12,
+            speed: 0.12 + Math.random() * 0.22,
+            vx: (Math.random() - 0.5) * 0.28,
+            vy: (Math.random() - 0.5) * 0.28,
+            pulseSpeed: 0.4 + Math.random() * 0.9,
+            pulseOff: Math.random() * Math.PI * 2,
+          };
+        });
+
+        let raf;
+        let t = 0;
+
+        function draw() {
+          raf = requestAnimationFrame(draw);
+          t += 0.016;
+
+          ctx.clearRect(0, 0, cv.width, cv.height);
+
+          // Very subtle dark vignette background
+          const bg = ctx.createRadialGradient(cv.width / 2, cv.height / 2, 0, cv.width / 2, cv.height / 2, Math.max(cv.width, cv.height) * 0.75);
+          bg.addColorStop(0, 'rgba(28,5,18,0.6)');
+          bg.addColorStop(1, 'rgba(2,2,10,0.88)');
+          ctx.fillStyle = bg;
+          ctx.fillRect(0, 0, cv.width, cv.height);
+
+          for (const o of orbs) {
+            // Smooth pulse
+            const pulse = 0.5 + 0.5 * Math.sin(t * o.pulseSpeed + o.pulseOff);
+            const a = o.baseAlpha * (0.6 + 0.4 * pulse);
+
+            // Drift
+            o.x += o.vx;
+            o.y += o.vy;
+            if (o.x < -o.r * 2) o.x = cv.width + o.r;
+            if (o.x > cv.width + o.r * 2) o.x = -o.r;
+            if (o.y < -o.r * 2) o.y = cv.height + o.r;
+            if (o.y > cv.height + o.r * 2) o.y = -o.r;
+
+            // Draw soft glowing orb
+            const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+            g.addColorStop(0, o.color + (a * 1.8).toFixed(3) + ')');
+            g.addColorStop(0.35, o.color + (a * 0.9).toFixed(3) + ')');
+            g.addColorStop(0.7, o.color + (a * 0.3).toFixed(3) + ')');
+            g.addColorStop(1, o.color + '0)');
+            ctx.beginPath();
+            ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+            ctx.fillStyle = g;
+            ctx.fill();
+          }
+        }
+
+        draw();
+
+        const ro = new ResizeObserver(resize);
+        ro.observe(cv.parentElement || document.body);
+
+        return () => {
+          cancelAnimationFrame(raf);
+          ro.disconnect();
+        };
+      }, [active]);
+    }
+
     function App() {
       const [stage, setStage] = useState("envelope");
       const [password, setPassword] = useState("");
       const [error, setError] = useState(false);
       const [unlocked, setUnlocked] = useState(false);
       const [countdown, setCountdown] = useState(getCountdownParts(new Date()));
-      const [galleryImages, setGalleryImages] = useState(Array(6).fill(null));
       const [confetti, setConfetti] = useState([]);
       const [petals, setPetals] = useState([]);
       const [floaters, setFloaters] = useState([]);
       const [letterFlipped, setLetterFlipped] = useState(false);
+      const [envelopeOpening, setEnvelopeOpening] = useState(false);
+      const [isMusicPlaying, setIsMusicPlaying] = useState(false);
       const letterRef = useRef(null);
+      const audioRef = useRef(null);
+      const bokehRef = useRef(null);
+
+      // Run bokeh only when on password screen
+      useBokehCanvas(bokehRef, stage === "password");
 
       useEffect(() => {
         if (!unlocked) return;
-        const timer = setInterval(() => {
-          setCountdown(getCountdownParts(new Date()));
-        }, 1000);
+        const timer = setInterval(() => setCountdown(getCountdownParts(new Date())), 1000);
         return () => clearInterval(timer);
       }, [unlocked]);
 
@@ -1211,103 +1413,121 @@
         if (hint) hint.classList.toggle("hidden", stage === "main");
       }, [stage]);
 
-      useEffect(() => {
-        window.__letterBackOpen = letterFlipped;
-      }, [letterFlipped]);
+      useEffect(() => { window.__letterBackOpen = letterFlipped; }, [letterFlipped]);
 
       useEffect(() => {
         if (!unlocked) return;
         const petalIcons = ["🌸", "🌺", "🌹", "💮", "🏵️"];
         const heartIcons = ["♥", "💕", "🌸", "💖", "✨", "🌹"];
         setPetals(Array.from({ length: 18 }, (_, i) => ({
-          id: `p-${i}`,
-          icon: petalIcons[i % petalIcons.length],
-          left: Math.random() * 100,
-          duration: 7 + Math.random() * 9,
-          delay: Math.random() * 14,
-          size: 10 + Math.random() * 13,
+          id: `p-${i}`, icon: petalIcons[i % petalIcons.length],
+          left: Math.random() * 100, duration: 7 + Math.random() * 9,
+          delay: Math.random() * 14, size: 10 + Math.random() * 13,
         })));
         setFloaters(Array.from({ length: 14 }, (_, i) => ({
-          id: `f-${i}`,
-          icon: heartIcons[i % heartIcons.length],
-          left: Math.random() * 100,
-          duration: 9 + Math.random() * 12,
-          delay: Math.random() * 18,
-          size: 11 + Math.random() * 13,
+          id: `f-${i}`, icon: heartIcons[i % heartIcons.length],
+          left: Math.random() * 100, duration: 9 + Math.random() * 12,
+          delay: Math.random() * 18, size: 11 + Math.random() * 13,
         })));
       }, [unlocked]);
 
+      useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        const syncPlaying = () => setIsMusicPlaying(!audio.paused);
+        const setStartPoint = () => {
+          if (!Number.isNaN(audio.duration) && audio.duration > SONG_START_SECONDS && audio.currentTime < SONG_START_SECONDS)
+            audio.currentTime = SONG_START_SECONDS;
+        };
+        audio.addEventListener("play", syncPlaying);
+        audio.addEventListener("pause", syncPlaying);
+        audio.addEventListener("loadedmetadata", setStartPoint);
+        audio.volume = 0.55;
+        if (audio.readyState >= 1) setStartPoint();
+        return () => {
+          audio.removeEventListener("play", syncPlaying);
+          audio.removeEventListener("pause", syncPlaying);
+          audio.removeEventListener("loadedmetadata", setStartPoint);
+        };
+      }, []);
+
+      useEffect(() => {
+        if (!unlocked) return;
+        audioRef.current?.play().catch(() => {});
+      }, [unlocked]);
+
       const confettiColors = useMemo(
-        () => ["#e8547a", "#ff8fab", "#d4a853", "#f0c070", "#ffffff", "#f8bbd0", "#c2185b", "#a066ff"],
-        []
+        () => ["#e8547a", "#ff8fab", "#d4a853", "#f0c070", "#ffffff", "#f8bbd0", "#c2185b", "#a066ff"], []
       );
 
       function openEnvelope() {
-        setStage("reveal");
+        if (envelopeOpening) return;
+        setEnvelopeOpening(true);
+        setTimeout(() => { setStage("reveal"); setEnvelopeOpening(false); }, 980);
       }
 
-      function goToPassword() {
-        setStage("password");
-      }
+      function goToPassword() { setStage("password"); }
 
       function checkPassword() {
         if (password.trim().toLowerCase() === PASSWORD) {
-          setUnlocked(true);
-          setError(false);
-          setStage("main");
+          setUnlocked(true); setError(false); setStage("main");
         } else {
-          setError(true);
-          setPassword("");
+          setError(true); setPassword("");
           setTimeout(() => setError(false), 1400);
         }
       }
 
       function launchConfetti() {
-        const pieces = Array.from({ length: 100 }, (_, i) => ({
+        setConfetti(Array.from({ length: 100 }, (_, i) => ({
           id: `${Date.now()}-${i}`,
-          left: Math.random() * 100,
-          width: 5 + Math.random() * 8,
-          height: 5 + Math.random() * 8,
-          delay: Math.random() * 0.9,
-          duration: 2 + Math.random() * 2.5,
+          left: Math.random() * 100, width: 5 + Math.random() * 8, height: 5 + Math.random() * 8,
+          delay: Math.random() * 0.9, duration: 2 + Math.random() * 2.5,
           radius: Math.random() > 0.5 ? "50%" : "2px",
           color: confettiColors[i % confettiColors.length],
-        }));
-        setConfetti(pieces);
+        })));
       }
 
-      function onSelectImage(index, file) {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setGalleryImages((prev) => {
-            const next = [...prev];
-            next[index] = e.target.result;
-            return next;
-          });
-        };
-        reader.readAsDataURL(file);
+      function toggleMusic() {
+        const audio = audioRef.current;
+        if (!audio) return;
+        if (audio.paused) {
+          if (!Number.isNaN(audio.duration) && audio.duration > SONG_START_SECONDS && audio.currentTime < SONG_START_SECONDS)
+            audio.currentTime = SONG_START_SECONDS;
+          audio.play().catch(() => {});
+        } else {
+          audio.pause();
+        }
       }
 
       return (
         <>
+          {/* ── Envelope Screen ── */}
           <div id="envelope-screen" className={`screen ${stage !== "envelope" ? "gone" : ""}`}>
             <p className="env-title">✦ Nazrin, you have a surprise 🌹 ✦</p>
-            <div className="envelope-wrap" onClick={openEnvelope}>
+            <div className={`envelope-wrap ${envelopeOpening ? "opening" : ""}`} onClick={openEnvelope}>
               <svg className="env-svg" viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <linearGradient id="eB" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: "#ad1457" }} /><stop offset="100%" style={{ stopColor: "#e8547a" }} /></linearGradient>
                   <linearGradient id="eF" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style={{ stopColor: "#880e4f" }} /><stop offset="100%" style={{ stopColor: "#ad1457" }} /></linearGradient>
+                  <linearGradient id="eCard" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: "#fff5fb" }} /><stop offset="100%" style={{ stopColor: "#ffe7f3" }} /></linearGradient>
                   <linearGradient id="eS" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style={{ stopColor: "#d4a853" }} /><stop offset="100%" style={{ stopColor: "#f0c070" }} /></linearGradient>
                 </defs>
-                <rect x="4" y="60" width="292" height="146" rx="8" ry="8" fill="url(#eB)" />
-                <path d="M4,60 L150,142 L296,60 Z" fill="url(#eF)" />
-                <circle cx="150" cy="127" r="26" fill="url(#eS)" />
+                <rect x="4" y="74" width="292" height="132" rx="8" ry="8" fill="url(#eB)" opacity="0.92" />
+                <g className="env-card">
+                  <rect x="38" y="84" width="224" height="110" rx="10" ry="10" fill="url(#eCard)" />
+                  <line x1="62" y1="122" x2="238" y2="122" stroke="#f2bfd5" strokeWidth="3" opacity="0.5" />
+                  <line x1="80" y1="142" x2="220" y2="142" stroke="#f2bfd5" strokeWidth="3" opacity="0.38" />
+                </g>
+                <path className="env-front" d="M4,74 L150,160 L296,74 L296,206 L4,206 Z" fill="url(#eF)" />
+                <path className="env-flap" d="M4,74 L150,12 L296,74 Z" fill="url(#eB)" />
+                <circle className="env-seal" cx="150" cy="126" r="24" fill="url(#eS)" />
+                <text className="env-seal-heart" x="150" y="133" textAnchor="middle" fill="#e8547a" fontSize="22" fontFamily="serif">❤</text>
               </svg>
             </div>
             <p className="open-label">tap to open</p>
           </div>
 
+          {/* ── Reveal Message ── */}
           <div id="reveal-msg" className={stage === "reveal" ? "show" : ""}>
             <p className="reveal-ornament">✦ &nbsp; for Nazrin &nbsp; ✦</p>
             <blockquote className="reveal-quote">Every star in this sky carries<br />a little message <em>for you.</em><br />Find them all.</blockquote>
@@ -1315,10 +1535,14 @@
             <button className="reveal-continue" onClick={goToPassword}>continue ✦</button>
           </div>
 
+          {/* ── Password Screen — Secret Garden with Bokeh ── */}
           <div id="password-screen" className={`screen ${stage !== "password" ? "gone" : ""}`}>
+            {/* Animated bokeh canvas */}
+            <canvas ref={bokehRef} id="bokeh-canvas" />
+
             <div className="pw-card">
               <span className="pw-lock">{error ? "💔" : "🔐"}</span>
-              <h2 className="pw-title">Secret Garden</h2>
+              <h2 className="pw-title">Thekkampatti</h2>
               <p className="pw-sub">This surprise is locked with love...</p>
               <div className="pw-box">
                 <input
@@ -1331,47 +1555,29 @@
                   onKeyDown={(e) => { if (e.key === "Enter") checkPassword(); }}
                 />
                 <p className={`pw-error ${error ? "show" : ""}`}>That's not quite right, my love</p>
-                <button className="pw-btn" onClick={checkPassword}>Unlock ✦</button>
+                <button className="pw-btn" onClick={checkPassword}>UNLOCK ✦</button>
               </div>
             </div>
+            <p className="pw-hint-text">✦ a little secret between us ✦</p>
           </div>
 
+          {/* ── Main Site ── */}
           {unlocked && (
             <div id="main-site">
               <div id="particles-layer">
                 {petals.map((p) => (
-                  <div
-                    key={p.id}
-                    className="petal"
-                    style={{
-                      left: `${p.left}%`,
-                      animationDuration: `${p.duration}s`,
-                      animationDelay: `${p.delay}s`,
-                      fontSize: `${p.size}px`,
-                    }}
-                  >
-                    {p.icon}
-                  </div>
+                  <div key={p.id} className="petal" style={{ left: `${p.left}%`, animationDuration: `${p.duration}s`, animationDelay: `${p.delay}s`, fontSize: `${p.size}px` }}>{p.icon}</div>
                 ))}
                 {floaters.map((f) => (
-                  <div
-                    key={f.id}
-                    className="fheart"
-                    style={{
-                      left: `${f.left}%`,
-                      animationDuration: `${f.duration}s`,
-                      animationDelay: `${f.delay}s`,
-                      fontSize: `${f.size}px`,
-                    }}
-                  >
-                    {f.icon}
-                  </div>
+                  <div key={f.id} className="fheart" style={{ left: `${f.left}%`, animationDuration: `${f.duration}s`, animationDelay: `${f.delay}s`, fontSize: `${f.size}px` }}>{f.icon}</div>
                 ))}
               </div>
 
               <div className="music-bar">
                 <div className="music-dot"></div>
                 <span className="music-title">♪ A melody for Nazrin</span>
+                <button className="music-toggle" onClick={toggleMusic}>{isMusicPlaying ? "Pause" : "Play"}</button>
+                <audio ref={audioRef} src={SONG_FILE} loop preload="auto" />
               </div>
 
               <section id="hero">
@@ -1379,8 +1585,8 @@
                 <h1 className="hero-title">Happy Birthday,</h1>
                 <div className="hero-name">Nazrin 🌹</div>
                 <p className="hero-sub">
-                  On the day the universe decided to gift the world something extraordinary - it gave us <em style={{ color: "var(--rose3)", fontStyle: "normal" }}>you</em>.
-                  Every single moment with you is a blessing I never take for granted.
+                  🌹On the day the universe decided to gift the world something extraordinary - it gave me <em style={{ color: "var(--rose3)", fontStyle: "normal" }}>you</em>.
+                  Every single moment with you is a blessing I never take for granted.Ne taan en loveable radio, every beat of my heart sings a song of love for you.🌹
                 </p>
                 <p className="hero-date">- Mohammed Ashfar · April 12</p>
                 <div className="hero-badge">
@@ -1390,7 +1596,7 @@
 
               <section id="quote-section">
                 <p className="section-eyebrow">written in the stars</p>
-                <blockquote className="big-quote">"In a room full of art,<br />I'd still stare at <em>Nazrin</em>."</blockquote>
+                <blockquote className="big-quote">"In a room full of art,<br />Enaku first sight love Mela nambikai irunthuchu but athu un kuda iruntha pothu athu fake nu purunchuchu  .<br/>I'd still stare at <em>Nazrin</em>."</blockquote>
                 <p style={{ marginTop: "14px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "Lato,sans-serif", color: "rgba(255,255,255,0.34)", fontSize: "11px" }}>
                   always yours, Mohammed Ashfar
                 </p>
@@ -1416,16 +1622,13 @@
                 <div style={{ width: "100%", maxWidth: "640px" }}>
                   <p className="section-eyebrow">sealed with love</p>
                   <h2 className="section-heading">A Letter From My Heart</h2>
-                  <div
-                    className="letter-flip-wrap"
-                    onClick={() => {
-                      setLetterFlipped((prev) => {
-                        const next = !prev;
-                        if (next) setTimeout(() => window.__initLetterScene && window.__initLetterScene(), 60);
-                        return next;
-                      });
-                    }}
-                  >
+                  <div className="letter-flip-wrap" onClick={() => {
+                    setLetterFlipped((prev) => {
+                      const next = !prev;
+                      if (next) setTimeout(() => window.__initLetterScene && window.__initLetterScene(), 60);
+                      return next;
+                    });
+                  }}>
                     <div className={`letter-flipper ${letterFlipped ? "flipped" : ""}`}>
                       <div className="letter-front">
                         <div className="letter-paper">
@@ -1433,7 +1636,7 @@
                           <p className="letter-dear">My Dearest Nazrin,</p>
                           <div className="letter-body-text">
                             <p>There are a million things I want to say to you on your birthday, but words always fall short when it comes to describing how much you mean to me.</p>
-                            <p>You are my favorite person in every room. You are the reason my days have color and my nights have peace. Your laugh is my favorite sound, your smile is my favorite sight, and your heart is the most beautiful thing I have ever known.</p>
+                            <p>You are my favorite person in my life. You are the reason my mental peace. Your laugh is my favorite sound, your smile is my favorite sight, and your heart is the most beautiful thing I have ever known.</p>
                             <p>On this day - the day the world got a little more beautiful because you were born - I want you to feel every ounce of love I carry for you. You deserve the whole world, and I'll spend every day trying to give it to you.</p>
                             <p>Happy Birthday, my love. This is just the beginning of forever.</p>
                           </div>
@@ -1455,23 +1658,10 @@
                   <p className="section-eyebrow">captured forever</p>
                   <h2 className="section-heading">Our Memories Together</h2>
                   <div className="gallery-grid">
-                    {GALLERY_LABELS.map((label, index) => (
-                      <label className="g-slot" key={label}>
-                        {galleryImages[index] ? (
-                          <img src={galleryImages[index]} alt={`memory-${index + 1}`} />
-                        ) : (
-                          <>
-                            <div className="g-slot-icon">📷</div>
-                            <div className="g-slot-txt">{label}</div>
-                          </>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }}
-                          onChange={(e) => onSelectImage(index, e.target.files?.[0])}
-                        />
-                      </label>
+                    {GALLERY_LABELS.map((imagePath, index) => (
+                      <div className="g-slot" key={imagePath}>
+                        <img src={imagePath} alt={`memory-${index + 1}`} loading="lazy" />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -1500,20 +1690,11 @@
           )}
 
           {confetti.map((p) => (
-            <div
-              key={p.id}
-              className="confetti-piece"
-              style={{
-                left: `${p.left}vw`,
-                top: 0,
-                background: p.color,
-                width: `${p.width}px`,
-                height: `${p.height}px`,
-                borderRadius: p.radius,
-                animationDelay: `${p.delay}s`,
-                animationDuration: `${p.duration}s`,
-              }}
-            />
+            <div key={p.id} className="confetti-piece" style={{
+              left: `${p.left}vw`, top: 0, background: p.color,
+              width: `${p.width}px`, height: `${p.height}px`,
+              borderRadius: p.radius, animationDelay: `${p.delay}s`, animationDuration: `${p.duration}s`,
+            }} />
           ))}
         </>
       );
